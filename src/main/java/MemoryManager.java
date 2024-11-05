@@ -1,6 +1,7 @@
 public class MemoryManager
 {
    protected MemoryAllocation head;
+   protected long size;
     
    protected final String Free = "Free";
 
@@ -11,7 +12,11 @@ public class MemoryManager
      */
    public MemoryManager(long size)
    {
-   
+	   this.size = size;
+	   
+	   this.head = new MemoryAllocation(null, -1, -1); // sentinel header
+	   head.next = head;
+	   head.prev = head;							   // circularly linked
    }
 
 
@@ -27,6 +32,21 @@ public class MemoryManager
       return null;
    }
 
+   /**
+    helper function for requestMemory()
+    */
+   protected MemoryAllocation seek(long size)
+   {
+	   return null;
+   }
+   
+   /**
+   helper function for seek()
+   */
+   protected long calculateSpace(MemoryAllocation mem1, MemoryAllocation mem2)
+   {
+	   return 0L;
+   }
 
     
     /**
@@ -36,6 +56,7 @@ public class MemoryManager
      */
    public void returnMemory(MemoryAllocation mem)
    {
+	   
    }
     
 
