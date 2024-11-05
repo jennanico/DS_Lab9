@@ -170,6 +170,27 @@ class MemoryManagerTest {
 		assertEquals(0, t.getPosition());
 	}
 	
+
+	@Test
+	void nonConsecutiveMergeTest() {
+		MemoryAllocation p = a.requestMemory(10L, "P");
+		MemoryAllocation q = a.requestMemory(40L, "Q");
+		MemoryAllocation r = a.requestMemory(25L, "R");
+		MemoryAllocation ab = a.requestMemory(15L, "AB");
+		MemoryAllocation bc = a.requestMemory(10L, "BC");
+		a.returnMemory(q);
+		
+		MemoryAllocation u = a.requestMemory(60L, "U");
+		assertEquals(null, u);
+		
+		MemoryAllocation s = a.requestMemory(40L, "S");
+		assertEquals(60, s.getPosition());
+		
+		MemoryAllocation t = a.requestMemory(20L, "T");
+		assertEquals(0, t.getPosition());
+	}
+	
+	
 	@Test
 	void notFullMergeTest() {
 		MemoryAllocation v = a.requestMemory(20L, "V");
