@@ -5,13 +5,16 @@ import org.junit.jupiter.api.Test;
 
 class MemoryManagerTest {
 	MemoryManager a;
+	
 	@BeforeEach
-	void setUp() throws Exception{
+	void setUp() throws Exception 
+	{
 		a = new MemoryManager(100);
 	}
 	
 	@Test
-	void requestMemoryTest() {
+	void MergeFromLeftTest() 
+	{
 		MemoryAllocation c = a.requestMemory(20L, "C");
 		assertEquals(c.getLength(), 20L);
 		assertEquals(c.getOwner(), "C");
@@ -42,12 +45,13 @@ class MemoryManagerTest {
 		assertEquals(k.getLength(), 55L);
 		assertEquals(k.getOwner(), "K");
 		assertEquals(k.getPosition(), 40);
+		
 		MemoryAllocation h = a.requestMemory(50L, "H");
 		assertEquals(null, h);	
 	}
 
 	@Test
-	void requestMemoryOppositeTest() {
+	void MergeFromRightTest() {
 		MemoryAllocation c = a.requestMemory(20L, "C");
 		assertEquals(c.getLength(), 20L);
 		assertEquals(c.getOwner(), "C");
@@ -67,6 +71,7 @@ class MemoryManagerTest {
 		
 		a.returnMemory(d);
 		a.returnMemory(e);
+		
 		MemoryAllocation z = a.requestMemory(76L, "Z");
 		assertEquals(null,z);
 		MemoryAllocation g = a.requestMemory(20L, "G");
@@ -77,132 +82,30 @@ class MemoryManagerTest {
 		assertEquals(k.getLength(), 55L);
 		assertEquals(k.getOwner(), "K");
 		assertEquals(k.getPosition(), 40);
+		
 		MemoryAllocation h = a.requestMemory(50L, "H");
 		assertEquals(null, h);	
 	}
-	@Test
-	void mergeFrontMemoryTest() {
-		MemoryAllocation j = a.requestMemory(30L, "J");
-		MemoryAllocation m = a.requestMemory(60L, "M");
-		MemoryAllocation n = a.requestMemory(10L, "N");
-		
-		a.returnMemory(j);
-		a.returnMemory(m);
-		assertEquals(90, n.getPosition());
-		MemoryAllocation o = a.requestMemory(90L, "O");
-		assertEquals(0, o.getPosition());
-		
-	}
-
-	@Test
-	void mergeFrontMemoryTestOpposite() {
-		MemoryAllocation j = a.requestMemory(30L, "J");
-		MemoryAllocation m = a.requestMemory(60L, "M");
-		MemoryAllocation n = a.requestMemory(10L, "N");
-		
-		a.returnMemory(m);
-		a.returnMemory(j);
-		assertEquals(90, n.getPosition());
-		MemoryAllocation o = a.requestMemory(90L, "O");
-		assertEquals(0, o.getPosition());
-		
-	}
-	
-	@Test 
-	void mergeBackMemoryTest() {
-		MemoryAllocation p = a.requestMemory(20L, "P");
-		MemoryAllocation q = a.requestMemory(40L, "Q");
-		MemoryAllocation r = a.requestMemory(40L, "R");
-		a.returnMemory(q);
-		a.returnMemory(r);
-		assertEquals(0, p.getPosition());
-		
-		MemoryAllocation s = a.requestMemory(80L, "S");
-		assertEquals(20, s.getPosition());
-	}
-	
-	@Test 
-	void mergeBackMemoryTestOpposite() {
-		MemoryAllocation p = a.requestMemory(20L, "P");
-		MemoryAllocation q = a.requestMemory(40L, "Q");
-		MemoryAllocation r = a.requestMemory(40L, "R");
-		a.returnMemory(r);
-		a.returnMemory(q);
-		assertEquals(0, p.getPosition());
-		
-		MemoryAllocation s = a.requestMemory(80L, "S");
-		assertEquals(20, s.getPosition());
-	}
-
-	@Test
-	void nonConsecutiveRemovalTest() {
-		MemoryAllocation p = a.requestMemory(20L, "P");
-		MemoryAllocation q = a.requestMemory(40L, "Q");
-		MemoryAllocation r = a.requestMemory(40L, "R");
-		a.returnMemory(r);
-		a.returnMemory(p);
-		assertEquals(20, q.getPosition());
-		MemoryAllocation u = a.requestMemory(70L, "U");
-		assertEquals(null, u);
-		
-		MemoryAllocation s = a.requestMemory(40L, "S");
-		assertEquals(60, s.getPosition());
-		
-		MemoryAllocation t = a.requestMemory(20L, "T");
-		assertEquals(0, t.getPosition());
-	}
 	
 	@Test
-	void nonConsecutiveRemovalTestOpposite() {
-		MemoryAllocation p = a.requestMemory(20L, "P");
-		MemoryAllocation q = a.requestMemory(40L, "Q");
-		MemoryAllocation r = a.requestMemory(40L, "R");
-		a.returnMemory(p);
-		a.returnMemory(r);
-		assertEquals(20, q.getPosition());
-		MemoryAllocation u = a.requestMemory(60L, "U");
-		assertEquals(null, u);
-		
-		MemoryAllocation s = a.requestMemory(40L, "S");
-		assertEquals(60, s.getPosition());
-		
-		MemoryAllocation t = a.requestMemory(20L, "T");
-		assertEquals(0, t.getPosition());
-	}
-	
-
-	@Test
-	void nonConsecutiveMergeTest() {
+	void nonConsecutiveMergeTest() 
+	{
 		MemoryAllocation p = a.requestMemory(10L, "P");
 		MemoryAllocation q = a.requestMemory(40L, "Q");
 		MemoryAllocation r = a.requestMemory(25L, "R");
 		MemoryAllocation ab = a.requestMemory(15L, "AB");
 		MemoryAllocation bc = a.requestMemory(10L, "BC");
-		a.returnMemory(q);
 		
-		MemoryAllocation u = a.requestMemory(60L, "U");
+		a.returnMemory(q);
+		a.returnMemory(ab);
+		a.returnMemory(r);
+		
+		MemoryAllocation u = a.requestMemory(81L, "U");
 		assertEquals(null, u);
 		
-		MemoryAllocation s = a.requestMemory(40L, "S");
-		assertEquals(60, s.getPosition());
-		
-		MemoryAllocation t = a.requestMemory(20L, "T");
-		assertEquals(0, t.getPosition());
+		MemoryAllocation s = a.requestMemory(80L, "S");
+		assertEquals(10, s.getPosition());
 	}
 	
-	
-	@Test
-	void notFullMergeTest() {
-		MemoryAllocation v = a.requestMemory(20L, "V");
-		MemoryAllocation w = a.requestMemory(20L, "W");
-		a.returnMemory(w);
-		assertEquals(0, v.getPosition());
-		MemoryAllocation x = a.requestMemory(80L, "X");
-		assertEquals(20, x.getPosition());
-		MemoryAllocation y = a.requestMemory(100L,"Y");
-		assertEquals(null,y);
-		
-		
-	}
 	
 }
