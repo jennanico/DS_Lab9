@@ -1,3 +1,4 @@
+
 public class MemoryAllocation
 {
     //package access-reachable by memory manager
@@ -41,7 +42,12 @@ public class MemoryAllocation
 	return len;
     }
     
-
+    public MemoryAllocation getNext() {
+    	return next;
+    }
+    public MemoryAllocation getPrev() {
+    	return prev;
+    }
 
     public String toString()
     {

@@ -1,3 +1,4 @@
+
 public class MemoryManager
 {
    protected MemoryAllocation head;
@@ -29,7 +30,23 @@ public class MemoryManager
     
    public MemoryAllocation requestMemory(long size,String requester)
    {
-      return null;
+	   if (head.next == head) {
+		   MemoryAllocation newMem = new MemoryAllocation(requester, 0, size, head, head);
+		   head.next = newMem;
+		   head.prev = newMem;
+		   return newMem;
+	   }
+	  
+	  MemoryAllocation space = seek(size);
+	  if(space == null)
+	  {
+		  return null;
+	  }
+	  MemoryAllocation newMem = new MemoryAllocation(requester, (space.getPosition()+space.getLength()), size, space.next, space);
+	  newMem.prev.next = newMem;
+	  newMem.next.prev = newMem;
+	  
+      return newMem;
    }
 
    /**
@@ -37,7 +54,22 @@ public class MemoryManager
     */
    protected MemoryAllocation seek(long size)
    {
-	   return null;
+	   MemoryAllocation curr = head;
+	   long calculating = 0L;
+	   while(size > calculating)
+	   {
+		   calculating = calculateSpace(curr, curr.next);
+		   
+		   curr = curr.next;
+		   if(curr == head) {
+			   break;
+		   }
+	   }
+	   if (size > calculating)
+	   {
+		   return null;
+	   }
+	   return curr.prev;
    }
    
    /**
@@ -45,7 +77,22 @@ public class MemoryManager
    */
    protected long calculateSpace(MemoryAllocation mem1, MemoryAllocation mem2)
    {
-	   return 0L;
+	
+	   if(mem1 == head)
+	   {
+		  long calc1 = mem2.getPosition();
+		  return calc1;
+		  
+	   }
+	   if (mem2 == head)
+	   {
+		   long calc1 = size - mem1.getPosition();
+		   long calc2 = calc1 - mem1.getLength();
+		   return calc2;
+	   }
+	   long calc1 = mem2.getPosition() - mem1.getPosition();
+	   long calc2 = calc1 - mem1.getLength();
+	   return calc2;
    }
 
     
@@ -56,7 +103,8 @@ public class MemoryManager
      */
    public void returnMemory(MemoryAllocation mem)
    {
-	   
+	   mem.prev.next = mem.next;
+	   mem.next.prev = mem.prev;
    }
     
 
