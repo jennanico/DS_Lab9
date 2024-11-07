@@ -107,5 +107,16 @@ class MemoryManagerTest {
 		assertEquals(10, s.getPosition());
 	}
 	
+	@Test
+	void extraTest() {
+		MemoryAllocation ad = a.requestMemory(5L, "AB");
+		MemoryAllocation ae = a.requestMemory(35L, "AE");
+		MemoryAllocation af = a.requestMemory(10L, "AE");
+		a.returnMemory(ad);
+		a.returnMemory(af);
+		MemoryAllocation ag = a.requestMemory(1L, "AG");
+		assertEquals(0, ag.getPosition());
+	}
+	
 	
 }
